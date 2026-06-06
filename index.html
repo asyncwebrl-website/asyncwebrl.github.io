@@ -84,15 +84,6 @@
 
         /* Nested subsections of the Algorithm section */
         .algo-subsection { margin-top: 3.4rem; }
-        .algo-sub-eyebrow {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #6f42c1;
-            margin-bottom: 0.45rem;
-        }
 
         /* Floating sidebar table of contents — indentation shows hierarchy */
         html { scroll-behavior: smooth; }
@@ -896,7 +887,6 @@
 
         <!-- ===== Subsection 1: why the decoupled loss matters ===== -->
         <div id="decoupled-loss" class="algo-subsection">
-        <div class="algo-sub-eyebrow">Algorithm · Part 1 of 2 — Decoupled Loss</div>
         <h3 class="title is-4 has-text-centered">Why the Decoupled Loss Matters</h3>
         <p class="has-text-centered" style="color:#555; max-width:780px; margin:0 auto 1.6rem;">
             Async RL learns from trajectories collected by a stale behavior policy $\pi_{\text{behave}}$, not the current $\pi_\theta$. A naive (coupled) importance ratio $\pi_\theta/\pi_{\text{behave}}$ drifts far from 1 under this off-policyness, so PPO's clip fires constantly and throws away the very samples async is producing &mdash; the throughput the system buys gets wasted on clipped gradients. Decoupling factors the ratio through a proximal policy $\pi_{\text{prox}}\!\approx\!\pi_\theta$ and centers clipping there, keeping stale rollouts usable. It is what makes multi-step async RL actually learn, and it is one of our two equally-important algorithmic ingredients alongside the constant $1/k$ normalizer.
@@ -917,7 +907,6 @@
 
         <!-- ===== Subsection 2: agent memory under step-number normalization ===== -->
         <div id="memory-drift" class="algo-subsection">
-        <div class="algo-sub-eyebrow">Algorithm · Part 2 of 2 — Step-Number Normalization</div>
         <h3 class="title is-4 has-text-centered">Emergent Behaviors of Agent Memory Under Step-Number Normalization (And Why You Shouldn't Use It)</h3>
         <p class="has-text-centered" style="color:#666; max-width:720px; margin:0 auto;">
             At every step the WebGym agent writes a free-form, <strong>append-only</strong> <code>Memory</code> JSON &mdash; running notes it keeps about the task.
