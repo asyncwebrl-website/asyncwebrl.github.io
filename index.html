@@ -619,7 +619,10 @@
         <a href="#memory-drift" data-sec="memory-drift">Step-Number Norm.</a>
     </div>
     <a href="#results" data-sec="results">Results</a>
-    <a href="#ablations" data-sec="ablations">Ablations</a>
+    <div class="toc-sub">
+        <a href="#curves" data-sec="curves">Training Curves</a>
+        <a href="#ablations" data-sec="ablations">Ablations</a>
+    </div>
     <a href="#BibTeX" data-sec="BibTeX">BibTeX</a>
 </nav>
 
@@ -1280,13 +1283,9 @@
                 dashed gray <span style="color:#888;"><strong>WebGym</strong></span> (Instruct only).
             </div>
         </div>
-    </div>
-</section>
 
-<!-- ============= ABLATIONS ============= -->
-<section class="section" id="ablations">
-    <div class="container is-max-desktop">
-        <h2 class="title is-3 has-text-centered">Ablations</h2>
+        <!-- ===== Ablations (sibling subsection of Training Curves) ===== -->
+        <h3 class="title is-4 has-text-centered" id="ablations" style="margin-top:3rem;">Ablations</h3>
         <div class="tabs is-centered is-boxed">
             <ul id="ablation-tabs">
                 <li class="is-active" data-target="abl-raft-grpo"><a>RAFT++ vs. GRPO</a></li>
@@ -2249,24 +2248,33 @@ function renderBatchSize(animate) {
 (function () {
     const toc = document.getElementById('floating-toc');
     if (!toc) return;
-    const map = {};
+    // Build id list in document/TOC order so the deepest section currently
+    // above the marker line wins (handles nested subsections correctly —
+    // a tall parent section no longer masks its children).
+    const ids = [], links = {};
     toc.querySelectorAll('a').forEach(a => {
-        const el = document.getElementById(a.getAttribute('data-sec'));
-        if (el) map[el.id] = a;
+        const id = a.getAttribute('data-sec');
+        if (document.getElementById(id)) { ids.push(id); links[id] = a; }
     });
     function setActive(id) {
         toc.querySelectorAll('a').forEach(a => a.classList.remove('is-active'));
-        if (map[id]) map[id].classList.add('is-active');
+        if (links[id]) links[id].classList.add('is-active');
     }
-    const obs = new IntersectionObserver((entries) => {
-        let best = null;
-        entries.forEach(e => {
-            if (e.isIntersecting &&
-                (!best || e.boundingClientRect.top < best.boundingClientRect.top)) best = e;
-        });
-        if (best) setActive(best.target.id);
-    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-    Object.keys(map).forEach(id => obs.observe(document.getElementById(id)));
+    let ticking = false;
+    function update() {
+        ticking = false;
+        const line = window.innerHeight * 0.3;
+        let active = ids[0];
+        for (const id of ids) {
+            if (document.getElementById(id).getBoundingClientRect().top <= line) active = id;
+        }
+        setActive(active);
+    }
+    window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
 })();
 </script>
 
